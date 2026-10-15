@@ -22,8 +22,13 @@ async def run():
     await drone.action.takeoff()
     await asyncio.sleep(5.0)
 
-    wanted_height = 30 + home.alt
-    
+    alt_up = 30 + home.alt
+    CYCLES = 6
+    for i in range(CYCLES):
+        await drone.action.goto_location(home_lat,home_long,alt_up)
+
+        await
+
     
 
     
