@@ -15,6 +15,18 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+OSRF_KEYRING=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
+OSRF_LIST=/etc/apt/sources.list.d/gazebo-stable.list
+
+if [ ! -f "${OSRF_LIST}" ] && ! grep -rqs "packages.osrfoundation.org" /etc/apt/sources.list.d/; then
+    echo "==> apt: adding the Gazebo (OSRF) repository"
+    # A fresh container only has Ubuntu's repos; the Gazebo packages live here.
+    # (Tools/setup/ubuntu.sh adds the same repo, so this is skipped if it ran.)
+    . /etc/os-release
+    wget -q https://packages.osrfoundation.org/gazebo.gpg -O "${OSRF_KEYRING}"
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=${OSRF_KEYRING}] http://packages.osrfoundation.org/gazebo/ubuntu-stable ${VERSION_CODENAME} main" > "${OSRF_LIST}"
+fi
+
 echo "==> apt: Gazebo Python bindings"
 apt-get update
 apt-get install -y python3-gz-transport13
