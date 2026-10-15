@@ -13,16 +13,26 @@ async def run():
     drone = System()
     await drone.connect(system_address="udp://:14540")
     print("Waiting for drone...")
-
+    async for state in drone.core.connection_state():
+        if state.is_connected:
+            print("connected")
+            break
+    async for health in drone.telemetry.health():
+        if health.is_global_position_ok and health.is_home_position_ok:
+            print("Position estimation okay")
+            break
     async for home in drone.telemetry.home():
         home_lat = home.latitude_deg
         home_long = home.longitude_deg
         home_alt = home.absolute_altitude_m
+        break
+    print("here")
     await drone.action.arm()
+    print("arm")
     await drone.action.takeoff()
     await asyncio.sleep(5.0)
-
-    alt_up = 50 + home.alt
+    print("here")
+    alt_up = 50 + home_alt
     alt_down = 20 + home_alt
 
     CYCLES = 6
