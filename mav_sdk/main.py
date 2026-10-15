@@ -22,6 +22,11 @@ async def run():
     await drone.action.takeoff()
     await asyncio.sleep(5.0)
 
+    wanted_height = 30 + home.alt
+    
+    
+
+    
     
 
 asyncio.run(run())
