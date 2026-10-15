@@ -1,0 +1,8 @@
+# Python packages for the px4-dev container (pip side only).
+# The Gazebo bindings (gz.transport13, gz.msgs10) come from apt, not pip;
+# see setup_container.sh.
+ 
+mavsdk
+opencv-python
+numpy
+ 
