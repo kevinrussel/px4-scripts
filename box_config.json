@@ -2,10 +2,10 @@
 
     "sdf_filename":"/src/PX4-Autopilot/scripts/sdf_folder/target_box.sdf"
     , "name": "target_box"
-    ,"x_position": 0.0
+    ,"x_position": 2.0
     , "y_position": 0.0
-    , "z_position": 9.14
+    , "z_position": 5.0
     , "w_position": 1.0
-    , "DRONE_NAME": "x500_mono_cam_0"
+    , "DRONE_NAME": "x500_mono_cam"
 
 }

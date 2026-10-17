@@ -26,22 +26,19 @@ async def run():
         home_long = home.longitude_deg
         home_alt = home.absolute_altitude_m
         break
-    print("here")
     await drone.action.arm()
-    print("arm")
     await drone.action.takeoff()
     await asyncio.sleep(5.0)
-    print("here")
     alt_up = 50 + home_alt
     alt_down = 20 + home_alt
 
     CYCLES = 6
     for i in range(CYCLES):
-        await drone.action.goto_location(home_lat,home_long,alt_up)
+        await drone.action.goto_location(home_lat,home_long,alt_up,0)
 
         await wait_for_altitude(drone,alt_up)
 
-        await drone.action.goto_location(home_lat,home_long,alt_down)
+        await drone.action.goto_location(home_lat,home_long,alt_down,0)
 
         await wait_for_altitude(drone,alt_down)
 
