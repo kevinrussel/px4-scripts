@@ -31,7 +31,7 @@ from gz.transport13 import Node
 # --- Configuration ----------------------------------------------------
 # Replace this with your actual camera topic (see docstring above for
 # how to find it with `gz topic -l`).
-CAMERA_TOPIC = "/world/default/model/x500_0/link/camera_link/sensor/camera/image"
+CAMERA_TOPIC = "/world/default/model/x500_mono_cam_0/link/camera_link/sensor/camera/image"
 
 # gz-msgs PixelFormatType enum values (see gz/msgs/image.pb.h)
 PIXEL_FORMAT_HANDLERS = {
