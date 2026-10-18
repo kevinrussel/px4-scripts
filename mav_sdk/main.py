@@ -2,11 +2,12 @@ import asyncio
 from mavsdk import System
 import math
 import json
+import time
 latest = {}
 class BoxListener(asyncio.DatagramProtocol):
 
     def datagram_received(self, data, addr):
-        latest.update(j)
+        latest.update(json.loads(data), t = time.time())
 
 
 
