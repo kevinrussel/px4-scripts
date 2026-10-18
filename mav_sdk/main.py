@@ -34,11 +34,11 @@ async def run():
 
     CYCLES = 6
     for i in range(CYCLES):
-        await drone.action.goto_location(home_lat,home_long,alt_up,0)
+        await drone.action.goto_location(home_lat,home_long,alt_up,90)
 
         await wait_for_altitude(drone,alt_up)
 
-        await drone.action.goto_location(home_lat,home_long,alt_down,0)
+        await drone.action.goto_location(home_lat,home_long,alt_down,90)
 
         await wait_for_altitude(drone,alt_down)
 

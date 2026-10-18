@@ -2,7 +2,7 @@
 # The Gazebo bindings (gz.transport13, gz.msgs10) come from apt, not pip;
 # see setup_container.sh.
  
-mavsdk
+# Pinned: v4+ is a different (native) API where System() no longer works.
+mavsdk<4
 opencv-python
 numpy
- 
