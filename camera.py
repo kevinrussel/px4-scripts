@@ -129,10 +129,12 @@ def detect_box(frame):
 def main() -> None:
     node = Node()
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    target_host = "127.0.0.1"
+    target_port = 6969
+    message = b"Hello, UDP Server!"
 
 
 
-    
     subscribed = node.subscribe(Image, CAMERA_TOPIC, image_callback)
     if not subscribed:
         print(f"Failed to subscribe to '{CAMERA_TOPIC}'.")
@@ -162,6 +164,7 @@ def main() -> None:
                                 f"size={w}x{h}", (10, 25),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
                 cv2.imshow("Drone Camera", frame)
+                sock.sendto(message, (target_host, target_port))
             elif not warned and time.time() - start > NO_FRAME_WARN_S:
                 # Subscribing to a topic that doesn't exist still "succeeds",
                 # so say something instead of failing silently.

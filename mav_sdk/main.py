@@ -8,7 +8,7 @@ class BoxListener(asyncio.DatagramProtocol):
 
     def datagram_received(self, data, addr):
         latest.update(json.loads(data), t = time.time())
-
+        print(data)
 
 
 async def wait_for_altitude(drone: System,target_relative_height: float):
