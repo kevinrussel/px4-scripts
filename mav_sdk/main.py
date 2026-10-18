@@ -23,6 +23,10 @@ async def run():
     drone = System()
     await drone.connect(system_address="udp://:14540")
     print("Waiting for drone...")
+
+    loop = asyncio.get_running_loop()
+    await loop.create_datagram_endpoint(BoxListener, local_addr=("127.0.0.1", 6969))
+
     async for state in drone.core.connection_state():
         if state.is_connected:
             print("connected")
