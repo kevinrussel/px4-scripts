@@ -73,7 +73,6 @@ class box:
         self.sdf_filename = config_file["sdf_filename"]
         self.sdf_filename = config_file["sdf_filename"]
         self.entity_name = config_file["name"] 
-        # self.req.name = config_file["name"] 
         self.deleted_box = False
 
         response = self.spawn_box(self.x,self.y,self.z,self.w)
