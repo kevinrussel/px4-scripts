@@ -35,7 +35,7 @@ import cv2
 import numpy as np
 from gz.msgs10.image_pb2 import Image
 from gz.transport13 import Node
-
+import socket
 # --- Configuration ----------------------------------------------------
 CAMERA_TOPIC = "/world/default/model/x500_mono_cam_0/link/camera_link/sensor/camera/image"
 
@@ -128,7 +128,11 @@ def detect_box(frame):
 
 def main() -> None:
     node = Node()
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
+
+
+    
     subscribed = node.subscribe(Image, CAMERA_TOPIC, image_callback)
     if not subscribed:
         print(f"Failed to subscribe to '{CAMERA_TOPIC}'.")
@@ -149,6 +153,7 @@ def main() -> None:
 
             if frame is not None:
                 box = detect_box(frame)
+
                 if box is not None:
                     x, y, w, h = box
                     cv2.rectangle(frame, (x, y), (x + w, y + h),
