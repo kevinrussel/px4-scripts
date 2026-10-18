@@ -36,6 +36,7 @@ import numpy as np
 from gz.msgs10.image_pb2 import Image
 from gz.transport13 import Node
 import socket
+import json
 # --- Configuration ----------------------------------------------------
 CAMERA_TOPIC = "/world/default/model/x500_mono_cam_0/link/camera_link/sensor/camera/image"
 
@@ -131,7 +132,7 @@ def main() -> None:
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     target_host = "127.0.0.1"
     target_port = 6969
-    message = b"Hello, UDP Server!"
+    data = {"name": "John", "value": 42}
 
 
 
@@ -164,7 +165,7 @@ def main() -> None:
                                 f"size={w}x{h}", (10, 25),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
                 cv2.imshow("Drone Camera", frame)
-                sock.sendto(message, (target_host, target_port))
+                sock.sendto(json.dumps(data).encode(), (target_host, target_port))
             elif not warned and time.time() - start > NO_FRAME_WARN_S:
                 # Subscribing to a topic that doesn't exist still "succeeds",
                 # so say something instead of failing silently.
