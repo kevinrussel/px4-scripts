@@ -8,7 +8,7 @@ class BoxListener(asyncio.DatagramProtocol):
 
     def datagram_received(self, data, addr):
         latest.update(json.loads(data), t = time.time())
-        print(data)
+        return
 
 
 async def wait_for_altitude(drone: System,target_relative_height: float):
@@ -26,7 +26,7 @@ async def run():
 
     loop = asyncio.get_running_loop()
     await loop.create_datagram_endpoint(BoxListener, local_addr=("127.0.0.1", 6969))
-
+    
     async for state in drone.core.connection_state():
         if state.is_connected:
             print("connected")
@@ -51,7 +51,7 @@ async def run():
         await drone.action.goto_location(home_lat,home_long,alt_up,90)
 
         await wait_for_altitude(drone,alt_up)
-
+        print(latest)
         await drone.action.goto_location(home_lat,home_long,alt_down,90)
 
         await wait_for_altitude(drone,alt_down)
