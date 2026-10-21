@@ -4,6 +4,15 @@ import math
 import json
 import time
 latest = {}
+
+## This is all to calculate the distance using the camera
+IMAGE_WIDTH = 1280
+HORIZONTAL_FOV = 1.74  # radians
+CUBE_WIDTH_M = 1.0
+FOCAL_LENGTH_PX = IMAGE_WIDTH / (
+    2 * math.tan(HORIZONTAL_FOV / 2)
+)
+
 class BoxListener(asyncio.DatagramProtocol):
 
     def datagram_received(self, data, addr):
