@@ -31,7 +31,29 @@ def estimate_distance(box_width_px):
         return None
 
     return (FOCAL_LENGTH_PX * CUBE_WIDTH_M) / box_width_px
-    
+
+
+def process_detection(data):
+    if not data["visible"]:
+        return None
+
+    width = data["image_width"]
+    height = data["image_height"]
+
+    center_x = data["center_x"]
+    center_y = data["center_y"]
+    box_width = data["box_width"]
+
+    error_x = center_x - width / 2
+    error_y = center_y - height / 2
+
+    distance = estimate_distance(box_width)
+
+    return {
+        "error_x": error_x,
+        "error_y": error_y,
+        "distance_m": distance,
+    }
 
 
 
@@ -59,18 +81,13 @@ async def run():
     await drone.action.arm()
     await drone.action.takeoff()
     await asyncio.sleep(5.0)
-    alt_up = 2 + home_alt
-    alt_down = 1 +  home_alt
+    alt_up = 16 + home_alt
 
     CYCLES = 6
     for i in range(CYCLES):
         await drone.action.goto_location(home_lat,home_long,alt_up,90)
-
         await wait_for_altitude(drone,alt_up)
-        print(latest)
-        await drone.action.goto_location(home_lat,home_long,alt_down,90)
-
-        await wait_for_altitude(drone,alt_down)
+        
     
 
     
