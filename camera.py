@@ -132,7 +132,7 @@ def main() -> None:
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     target_host = "127.0.0.1"
     target_port = 6969
-    data = {"name": "John", "value": 42}
+    
 
 
 
