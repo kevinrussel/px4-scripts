@@ -156,6 +156,7 @@ def main() -> None:
 
             if frame is not None:
                 box = detect_box(frame)
+                height, width = frame.shape[:2]
 
                 if box is not None:
                     x, y, w, h = box
@@ -164,6 +165,18 @@ def main() -> None:
                     cv2.putText(frame, f"box center=({x + w // 2},{y + h // 2}) "
                                 f"size={w}x{h}", (10, 25),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+                    x,y,w,h = box
+                    center_x = (x + w) / 2
+                    center_y = (y + h) / 2
+                    data = {
+                        "visible": True,
+                        "center_x": center_x,
+                        "center_y": center_y,
+                        "box_width": w,
+                        "box_height": h,
+                        "image_width": width,
+                        "image_height": height
+                    }
                 cv2.imshow("Drone Camera", frame)
                 sock.sendto(json.dumps(data).encode(), (target_host, target_port))
             elif not warned and time.time() - start > NO_FRAME_WARN_S:
