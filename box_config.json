@@ -2,7 +2,7 @@
 
     "sdf_filename":"/src/PX4-Autopilot/scripts/sdf_folder/target_box.sdf"
     , "name": "target_box"
-    ,"x_position": 2.0
+    ,"x_position": 0.0
     , "y_position": 0.0
     , "z_position": 5.0
     , "w_position": 1.0

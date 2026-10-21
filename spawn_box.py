@@ -44,8 +44,8 @@ class box:
                         self.deleted_box = True
                         random_x = self.random_x_value()
                         self.x = random_x
-                        random_z = self.random_z_value()
-                        self.z = random_z 
+                        # random_z = self.random_z_value()
+                        # self.z = random_z 
                 break
         if(self.deleted_box):
             self.spawn_box(self.x,self.y,self.z,self.w)
