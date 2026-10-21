@@ -177,6 +177,10 @@ def main() -> None:
                         "image_width": width,
                         "image_height": height
                     }
+                else:
+                    data = {
+                    "visible": False
+                }
                 cv2.imshow("Drone Camera", frame)
                 sock.sendto(json.dumps(data).encode(), (target_host, target_port))
             elif not warned and time.time() - start > NO_FRAME_WARN_S:

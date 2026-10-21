@@ -16,7 +16,14 @@ async def wait_for_altitude(drone: System,target_relative_height: float):
     async for position in drone.telemetry.position():
         if (abs(position.absolute_altitude_m - target_relative_height) < 1.0):
             return
+
+def estimate_distance(box_width_px):
+    if box_width_px <= 0:
+        return None
+
+    return (FOCAL_LENGTH_PX * CUBE_WIDTH_M) / box_width_px
     
+
 
 
 async def run():
@@ -43,8 +50,8 @@ async def run():
     await drone.action.arm()
     await drone.action.takeoff()
     await asyncio.sleep(5.0)
-    alt_up = 50 + home_alt
-    alt_down = 20 + home_alt
+    alt_up = 2 + home_alt
+    alt_down = 1 +  home_alt
 
     CYCLES = 6
     for i in range(CYCLES):
@@ -55,6 +62,7 @@ async def run():
         await drone.action.goto_location(home_lat,home_long,alt_down,90)
 
         await wait_for_altitude(drone,alt_down)
+    
 
     
 
