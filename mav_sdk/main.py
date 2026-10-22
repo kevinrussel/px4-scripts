@@ -91,11 +91,14 @@ async def run():
         ans = process_detection(latest)
         if(ans is not None):
             print(f"It is visible {ans}")
-            if(counter % 20 == 0):
+            if(counter % 5 == 0):
                 print(f"Holding: {ans}")
                 break
             print(f"Seen image {ans}")
+            counter +=1
     await drone.action.hold()
+    print("About to sleep")
+    await asyncio.sleep(10.0)
         
     
 
