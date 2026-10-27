@@ -88,7 +88,7 @@ async def run():
     await wait_for_altitude(drone,20)
     counter = 1
     while True:
-        if(counter % 20 == 0):
+        if(counter % 50 == 0):
             break
         ans = process_detection(latest)
     
