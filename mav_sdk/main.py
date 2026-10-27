@@ -84,18 +84,29 @@ async def run():
     alt_up = home_alt
 
     counter = 1
+    await drone.action.goto_location(home_lat,home_long,20,90)
+    await wait_for_altitude(drone,20)
+    counter = 1
     while True:
-        alt_up = alt_up + 1
-        await drone.action.goto_location(home_lat,home_long,alt_up, 90)
-        await wait_for_altitude(drone,alt_up)
+        if(counter % 20 == 0):
+            break
         ans = process_detection(latest)
-        if(ans is not None):
-            print(f"It is visible {ans}")
-            if(counter % 5 == 0):
-                print(f"Holding: {ans}")
-                break
-            print(f"Seen image {ans}")
-            counter +=1
+    
+        print(f"It is visible {ans}")
+        counter +=1
+        await asyncio.sleep(0.25)
+    # while True:
+    #     alt_up = alt_up + 1
+    #     await drone.action.goto_location(home_lat,home_long,alt_up, 90)
+    #     await wait_for_altitude(drone,alt_up)
+    #     ans = process_detection(latest)
+    #     if(ans is not None):
+    #         print(f"It is visible {ans}")
+    #         if(counter % 5 == 0):
+    #             print(f"Holding: {ans}")
+    #             break
+    #         print(f"Seen image {ans}")
+    #         counter +=1
     await drone.action.hold()
     print("About to sleep")
     await asyncio.sleep(10.0)
