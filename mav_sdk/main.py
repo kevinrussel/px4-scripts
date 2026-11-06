@@ -4,7 +4,7 @@ import math
 import json
 import time
 latest = {}
-
+from mavsdk.offboard import VelocityBodyYawspeed
 ## This is all to calculate the distance using the camera
 IMAGE_WIDTH = 1280
 HORIZONTAL_FOV = 1.74  # radians
@@ -87,6 +87,7 @@ async def run():
     await drone.action.goto_location(home_lat,home_long,20,90)
     await wait_for_altitude(drone,20)
     counter = 1
+    second_counter = 0
     while True:
         if(counter % 50 == 0):
             break
@@ -95,6 +96,14 @@ async def run():
         print(f"It is visible {ans}")
         counter +=1
         await asyncio.sleep(0.25)
+
+        if(ans["error_y"] > -10 and ans["error_y"] < 10):
+            second_counter +=1
+            if(second_counter % 5 == 0):
+                while True:
+                    await drone.offboard.set_velocity_body(VelocityBodyYawspeed(10.0,0.0,0.0,0.0))
+                    await asyncio.sleep(5)
+                    print("in While loop")
     # while True:
     #     alt_up = alt_up + 1
     #     await drone.action.goto_location(home_lat,home_long,alt_up, 90)
