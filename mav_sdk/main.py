@@ -23,7 +23,7 @@ class BoxListener(asyncio.DatagramProtocol):
 async def wait_for_altitude(drone: System,target_relative_height: float):
     
     async for position in drone.telemetry.position():
-        if (abs(position.absolute_altitude_m - target_relative_height) < 1.0):
+        if (abs(position.absolute_altitude_m - target_relative_height) < 0.3):
             return
 
 def estimate_distance(box_width_px):
