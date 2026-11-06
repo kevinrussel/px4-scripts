@@ -105,7 +105,7 @@ async def run():
         counter +=1
         await asyncio.sleep(0.25)
 
-        if(ans["error_y"] > -10 and ans["error_y"] < 10):
+        if(ans["error_y"] > -100 and ans["error_y"] < 100):
             second_counter +=1
             if(second_counter % 5 == 0):
                 while True:
