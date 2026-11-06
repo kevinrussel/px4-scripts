@@ -88,7 +88,15 @@ async def run():
     await wait_for_altitude(drone,20)
     counter = 1
     second_counter = 0
-    while True:
+
+    await drone.offboard.set_velocity_body(VelocityBodyYawspeed(0.0, 0.0, 0.0, 0.0))
+    try:
+        await drone.offboard.start()
+        print("-- Offboard started")
+    except Exception as e:
+        print(f"Failed to start offboard: {e}")
+        return
+    while True: 
         if(counter % 50 == 0):
             break
         ans = process_detection(latest)
@@ -101,9 +109,10 @@ async def run():
             second_counter +=1
             if(second_counter % 5 == 0):
                 while True:
-                    await drone.offboard.set_velocity_body(VelocityBodyYawspeed(10.0,0.0,0.0,0.0))
+                    await drone.offboard.set_velocity_body(VelocityBodyYawspeed(1.0, 0.0, 0.0, 0.0))
+                    print("Moving forward for 5s")
                     await asyncio.sleep(5)
-                    print("in While loop")
+                    await drone.offboard.set_velocity_body(VelocityBodyYawspeed(0.0, 0.0, 0.0, 0.0))
     # while True:
     #     alt_up = alt_up + 1
     #     await drone.action.goto_location(home_lat,home_long,alt_up, 90)
