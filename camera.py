@@ -166,8 +166,8 @@ def main() -> None:
                                 f"size={w}x{h}", (10, 25),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
                     x,y,w,h = box
-                    center_x = (x + w) / 2
-                    center_y = (y + h) / 2
+                    center_x = x + w / 2
+                    center_y = y + h / 2
                     data = {
                         "visible": True,
                         "center_x": center_x,
