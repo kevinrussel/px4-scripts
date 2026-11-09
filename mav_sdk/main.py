@@ -100,6 +100,7 @@ async def run():
         if(counter % 50 == 0):
             break
         ans = process_detection(latest)
+        if(ans not None):
     
         print(f"It is visible {ans}")
         counter +=1
