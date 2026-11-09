@@ -25,11 +25,28 @@ class VisualTracker:
         self.k_p_alt = 0.8
         self.k_p_fwd = 0.5
 
+        ## 8% tolerance to be within the center
+        self.tol_x = 0.08
+        self.tol_y = 0.08
 
+        # stopping distance.
+        self.target_dist_m = 0.8
     def compute_control(self,detection_data):
 
         if not detection_data:
             return 0.0,0.0,0.0,15.0, False, False
+
+        # Normalize the erros for a -1 to 1 range.
+        norm_err_x = detection_data["error_x"] / (self.width/2.0)
+        norm_err_y = detection_data["error_y"] / (self.height / 2.0)
+        dist = detection_data["distance_m"]
+
+        is_aligned = ( abs(norm_err_x) < self.tol_x and abs(norm_err_y) < self.tol_y)
+        
+
+
+        return is_aligned
+
 
         
 
