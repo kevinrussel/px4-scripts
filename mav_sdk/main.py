@@ -113,18 +113,7 @@ async def run():
                     print("Moving forward for 5s")
                     await asyncio.sleep(5)
                     await drone.offboard.set_velocity_body(VelocityBodyYawspeed(0.0, 0.0, 0.0, 0.0))
-    # while True:
-    #     alt_up = alt_up + 1
-    #     await drone.action.goto_location(home_lat,home_long,alt_up, 90)
-    #     await wait_for_altitude(drone,alt_up)
-    #     ans = process_detection(latest)
-    #     if(ans is not None):
-    #         print(f"It is visible {ans}")
-    #         if(counter % 5 == 0):
-    #             print(f"Holding: {ans}")
-    #             break
-    #         print(f"Seen image {ans}")
-    #         counter +=1
+
     await drone.action.hold()
     print("About to sleep")
     await asyncio.sleep(10.0)
