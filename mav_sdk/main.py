@@ -20,6 +20,19 @@ class VisualTracker:
         self.width = width
         self.height = height
 
+        # Speeds that the drone moves at.
+        self.k_p_yaw = 25.0
+        self.k_p_alt = 0.8
+        self.k_p_fwd = 0.5
+
+
+    def compute_control(self,detection_data):
+
+        if not detection_data:
+            return 0.0,0.0,0.0,15.0, False, False
+
+        
+
 
 
 class BoxListener(asyncio.DatagramProtocol):
@@ -97,7 +110,7 @@ async def run():
     await wait_for_altitude(drone,20)
     counter = 1
     second_counter = 0
-
+    
     await drone.offboard.set_velocity_body(VelocityBodyYawspeed(0.0, 0.0, 0.0, 0.0))
     try:
         await drone.offboard.start()
@@ -105,10 +118,18 @@ async def run():
     except Exception as e:
         print(f"Failed to start offboard: {e}")
         return
+    tracker = VisualTracker(width=1280,height=720)
     while True: 
         if(counter % 50 == 0):
             break
         ans = process_detection(latest)
+
+        vx,vy,vz,yawspeed,aligned,contact = tracker.compute_control(ans)
+        if (not aligned and not contact):
+            await drone.offboard.set_velocity_body(VelocityBodyYawspeed(vx,vy,vz,yawspeed))
+            await asyncio.sleep(0.5)
+
+
         if(ans is not None):
             print(f"It is visible {ans}")
             counter +=1
@@ -122,10 +143,6 @@ async def run():
                         print("Moving forward for 5s")
                         await asyncio.sleep(5)
                         await drone.offboard.set_velocity_body(VelocityBodyYawspeed(0.0, 0.0, 0.0, 0.0))
-        else:
-            await drone.offboard.set_velocity_body(VelocityBodyYawspeed(0.0,0.0,0.0,-10.0))
-            print("turing left")
-            await asyncio.sleep(2.0)
 
     await drone.action.hold()
     print("About to sleep")
