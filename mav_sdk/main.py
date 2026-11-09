@@ -13,6 +13,15 @@ FOCAL_LENGTH_PX = IMAGE_WIDTH / (
     2 * math.tan(HORIZONTAL_FOV / 2)
 )
 
+class VisualTracker:
+
+
+    def __init__(self,width=1280, height=720):
+        self.width = width
+        self.height = height
+
+
+
 class BoxListener(asyncio.DatagramProtocol):
 
     def datagram_received(self, data, addr):
@@ -100,20 +109,23 @@ async def run():
         if(counter % 50 == 0):
             break
         ans = process_detection(latest)
-        if(ans not None):
-    
-        print(f"It is visible {ans}")
-        counter +=1
-        await asyncio.sleep(0.25)
+        if(ans is not None):
+            print(f"It is visible {ans}")
+            counter +=1
+            await asyncio.sleep(0.25)
 
-        if(ans["error_y"] > -100 and ans["error_y"] < 100):
-            second_counter +=1
-            if(second_counter % 5 == 0):
-                while True:
-                    await drone.offboard.set_velocity_body(VelocityBodyYawspeed(1.0, 0.0, 0.0, 0.0))
-                    print("Moving forward for 5s")
-                    await asyncio.sleep(5)
-                    await drone.offboard.set_velocity_body(VelocityBodyYawspeed(0.0, 0.0, 0.0, 0.0))
+            if(ans["error_y"] > -100 and ans["error_y"] < 100):
+                second_counter +=1
+                if(second_counter % 5 == 0):
+                    while True:
+                        await drone.offboard.set_velocity_body(VelocityBodyYawspeed(1.0, 0.0, 0.0, 0.0))
+                        print("Moving forward for 5s")
+                        await asyncio.sleep(5)
+                        await drone.offboard.set_velocity_body(VelocityBodyYawspeed(0.0, 0.0, 0.0, 0.0))
+        else:
+            await drone.offboard.set_velocity_body(VelocityBodyYawspeed(0.0,0.0,0.0,-10.0))
+            print("turing left")
+            await asyncio.sleep(2.0)
 
     await drone.action.hold()
     print("About to sleep")
