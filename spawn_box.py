@@ -15,7 +15,10 @@ class box:
     def random_z_value(self):
         return random.randint(20,50)
     def random_x_value(self):
-        return random.randint(20,50)
+        return random.randint(-10,10)
+
+    def random_y_value(self):
+        return random.randint(-10,10)
 
     def delete_box(self):
         node = Node()
@@ -44,6 +47,8 @@ class box:
                         self.deleted_box = True
                         random_x = self.random_x_value()
                         self.x = random_x
+                        random_y = self.random_y_value()
+                        self.y = random_y
                         # random_z = self.random_z_value()
                         # self.z = random_z 
                 break

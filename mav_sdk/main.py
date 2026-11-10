@@ -5,6 +5,7 @@ import json
 import time
 latest = {}
 from mavsdk.offboard import VelocityBodyYawspeed
+import numpy as np
 ## This is all to calculate the distance using the camera
 IMAGE_WIDTH = 1280
 HORIZONTAL_FOV = 1.74  # radians
@@ -26,15 +27,15 @@ class VisualTracker:
         self.k_p_fwd = 0.5
 
         ## 8% tolerance to be within the center
-        self.tol_x = 0.08
-        self.tol_y = 0.08
+        self.tol_x = 0.15
+        self.tol_y = 0.15
 
         # stopping distance.
         self.target_dist_m = 0.8
     def compute_control(self,detection_data):
 
         if not detection_data:
-            return 0.0,0.0,0.0,15.0, False, False
+            return 0.0,0.0,0.0,15.0, False
 
         # Normalize the erros for a -1 to 1 range.
         norm_err_x = detection_data["error_x"] / (self.width/2.0)
@@ -42,10 +43,34 @@ class VisualTracker:
         dist = detection_data["distance_m"]
 
         is_aligned = ( abs(norm_err_x) < self.tol_x and abs(norm_err_y) < self.tol_y)
+
+        # is_contact = dist is not None and (dist <= self.target_dist_m)
         
 
+        # Centering
+        yaw_rate = self.k_p_yaw * norm_err_x
+        vel_down = self.k_p_alt * norm_err_y
 
-        return is_aligned
+        ## clamp limits
+        yaw_rate = float(np.clip(yaw_rate, -30.0,30.0))
+        vel_down = float(np.clip(vel_down, -1.0, 1.0))
+
+        # We want to center first before we move the drone.
+        vel_forward = 3.0
+        if not is_aligned:
+            vel_forward = 0.0
+        # else:
+        #     # CENTERED: Move forward toward target
+        #     if dist is not None:
+        #         # Slow down as we get close
+        #         error_dist = dist - self.target_dist_m
+        #         vel_forward = float(
+        #             np.clip(self.k_p_fwd * error_dist, 0.2, 1.5)
+        #         )
+        #     else:
+        #         vel_forward = 0.5
+
+        return vel_forward, 0.0, vel_down, yaw_rate, is_aligned
 
 
         
@@ -137,30 +162,31 @@ async def run():
         return
     tracker = VisualTracker(width=1280,height=720)
     while True: 
-        if(counter % 50 == 0):
-            break
         ans = process_detection(latest)
+        vx, vy, vz, yawspeed, aligned = tracker.compute_control(ans)
+        if ans is not None:
+            # if contact:
+            #     print("[SUCCESS] Reached target! Despawning/holding.")
+            #     await drone.offboard.set_velocity_body(
+            #         VelocityBodyYawspeed(0.0, 0.0, 0.0, 0.0)
+            #     )
+            #     break
 
-        vx,vy,vz,yawspeed,aligned,contact = tracker.compute_control(ans)
-        if (not aligned and not contact):
+            if not aligned:
+                print(f"[CENTERING] err_x={ans.get('error_x', 0):.1f}, yaw={yawspeed:.1f}")
+            else:
+                print(f"[PURSUING] Aligned! Approaching at vx={vx:.1f} m/s")
+
+            # Send setpoint to PX4
+            await drone.offboard.set_velocity_body(
+                VelocityBodyYawspeed(vx, vy, vz, yawspeed)
+            )
+
+            await asyncio.sleep(0.10)  # 10 Hz tick rate
+        else:
             await drone.offboard.set_velocity_body(VelocityBodyYawspeed(vx,vy,vz,yawspeed))
-            await asyncio.sleep(0.5)
-
-
-        if(ans is not None):
-            print(f"It is visible {ans}")
-            counter +=1
-            await asyncio.sleep(0.25)
-
-            if(ans["error_y"] > -100 and ans["error_y"] < 100):
-                second_counter +=1
-                if(second_counter % 5 == 0):
-                    while True:
-                        await drone.offboard.set_velocity_body(VelocityBodyYawspeed(1.0, 0.0, 0.0, 0.0))
-                        print("Moving forward for 5s")
-                        await asyncio.sleep(5)
-                        await drone.offboard.set_velocity_body(VelocityBodyYawspeed(0.0, 0.0, 0.0, 0.0))
-
+            await asyncio.sleep(0.1)
+        
     await drone.action.hold()
     print("About to sleep")
     await asyncio.sleep(10.0)
