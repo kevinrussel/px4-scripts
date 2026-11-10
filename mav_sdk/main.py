@@ -30,8 +30,7 @@ class VisualTracker:
         self.tol_x = 0.15
         self.tol_y = 0.15
 
-        # stopping distance.
-        self.target_dist_m = 0.8
+        
     def compute_control(self,detection_data):
 
         if not detection_data:
