@@ -31,7 +31,7 @@ class VisualTracker:
         self.tol_y = 0.15
 
         self.lock_enter_tol = 0.08
-        self.lock_exit_tol = 0.25
+        self.lock_exit_tol = 0.15
         self.is_locked = False
 
         self.filtered_err_x = 0.0
@@ -42,6 +42,7 @@ class VisualTracker:
     def compute_control(self,detection_data):
 
         if not detection_data:
+            self.is_locked = False
             return 0.0,0.0,0.0,15.0, False
 
         # Normalize the erros for a -1 to 1 range.
@@ -74,8 +75,10 @@ class VisualTracker:
         ## clamp limits
         yaw_rate = float(np.clip(yaw_rate, -30.0,30.0))
         vel_down = float(np.clip(vel_down, -1.0, 1.0))
+        vel_forward = 2.0
+        if not self.is_locked:
+            vel_forward = 0.0
 
-        if not 
 
         return vel_forward, 0.0, vel_down, yaw_rate, is_aligned
 
