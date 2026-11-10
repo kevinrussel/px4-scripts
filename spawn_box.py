@@ -41,7 +41,7 @@ class box:
             if pose.name == self.drone_name:
                 distance = math.dist((self.x, self.y, self.z), (pose.position.x, pose.position.y, pose.position.z))
                 print(f"The distance is {distance}")
-                if distance <= 1.0:
+                if distance <= 1.4:
                     response = self.delete_box()
                     if response:
                         self.deleted_box = True
