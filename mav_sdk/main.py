@@ -24,11 +24,19 @@ class VisualTracker:
         # Speeds that the drone moves at.
         self.k_p_yaw = 25.0
         self.k_p_alt = 0.8
-        self.k_p_fwd = 0.5
+        self.k_p_fwd = 2.0
 
         ## 8% tolerance to be within the center
         self.tol_x = 0.15
         self.tol_y = 0.15
+
+        self.lock_enter_tol = 0.08
+        self.lock_exit_tol = 0.25
+        self.is_locked = False
+
+        self.filtered_err_x = 0.0
+        self.filtered_err_y = 0.0
+        self.alpha = 0.35
 
         
     def compute_control(self,detection_data):
@@ -39,7 +47,20 @@ class VisualTracker:
         # Normalize the erros for a -1 to 1 range.
         norm_err_x = detection_data["error_x"] / (self.width/2.0)
         norm_err_y = detection_data["error_y"] / (self.height / 2.0)
-        dist = detection_data["distance_m"]
+
+
+        self.filtered_err_x = (self.alpha * norm_err_x + (1.0 - self.alpha) * self.filtered_err_x)
+        self.filtered_err_y = (self.alpha * norm_err_y + (1.0 - self.alpha) * self.filtered_err_y)
+
+        ex= self.filtered_err_x
+        ey = self.filtered_err_y
+        if not self.is_locked:
+            if abs(ex) < self.lock_exit_tol and abs(ey) < self.lock_enter_tol:
+                self.is_locked = True
+            else:
+                if abs(ex) > self.lock_exit_tol:
+                    self.is_locked = False
+
 
         is_aligned = ( abs(norm_err_x) < self.tol_x and abs(norm_err_y) < self.tol_y)
 
@@ -54,20 +75,7 @@ class VisualTracker:
         yaw_rate = float(np.clip(yaw_rate, -30.0,30.0))
         vel_down = float(np.clip(vel_down, -1.0, 1.0))
 
-        # We want to center first before we move the drone.
-        vel_forward = 3.0
-        if not is_aligned:
-            vel_forward = 0.0
-        # else:
-        #     # CENTERED: Move forward toward target
-        #     if dist is not None:
-        #         # Slow down as we get close
-        #         error_dist = dist - self.target_dist_m
-        #         vel_forward = float(
-        #             np.clip(self.k_p_fwd * error_dist, 0.2, 1.5)
-        #         )
-        #     else:
-        #         vel_forward = 0.5
+        if not 
 
         return vel_forward, 0.0, vel_down, yaw_rate, is_aligned
 
