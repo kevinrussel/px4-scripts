@@ -146,24 +146,10 @@ async def run():
 
 
     async for health in drone.telemetry.health():
-        print("global:", health.is_global_position_ok,
-            "home:", health.is_home_position_ok,
-            "local:", health.is_local_position_ok,
-            "armable:", health.is_armable)
-        if health.is_global_position_ok and health.is_home_position_ok:
-            print("Position estimation okay")
+        if health.is_global_position_ok and health.is_armable:
+            print("Ready to arm")
             break
-    # print("hitting")
-    # async for health in drone.telemetry.health():
-    #     print("hitting 2")
-    #     if health.is_global_position_ok and health.is_home_position_ok:
-    #         print("Position estimation okay")
-    #         break
-    async for home in drone.telemetry.home():
-        home_lat = home.latitude_deg
-        home_long = home.longitude_deg
-        home_alt = home.absolute_altitude_m
-        break
+   
     await drone.action.arm()
     await drone.action.takeoff()
     await asyncio.sleep(5.0)
