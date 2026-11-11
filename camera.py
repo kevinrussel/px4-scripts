@@ -38,7 +38,7 @@ from gz.transport13 import Node
 import socket
 import json
 # --- Configuration ----------------------------------------------------
-CAMERA_TOPIC = "/world/default/model/x500_mono_cam_0/link/camera_link/sensor/camera/image"
+CAMERA_TOPIC = "/world/baylands/model/x500_mono_cam_0/link/camera_link/sensor/camera/image"
 
 # Seconds to wait for the first frame before printing a hint.
 NO_FRAME_WARN_S = 5.0
