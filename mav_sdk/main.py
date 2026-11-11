@@ -27,8 +27,8 @@ class VisualTracker:
         self.k_p_fwd = 2.0
 
         ## 8% tolerance to be within the center
-        self.tol_x = 0.15
-        self.tol_y = 0.15
+        self.tol_x = 0.08
+        self.tol_y = 0.08
 
         self.lock_enter_tol = 0.08
         self.lock_exit_tol = 0.15
@@ -158,15 +158,15 @@ async def run():
         home_long = position.longitude_deg
         home_alt = position.absolute_altitude_m
         break
-    print("here")
+    print("home alt:", home_alt)
     await drone.action.arm()
     await drone.action.takeoff()
     await asyncio.sleep(5.0)
     alt_up = home_alt
-
+    target_alt = home_alt + 20
     counter = 1
-    await drone.action.goto_location(home_lat,home_long,20,90)
-    await wait_for_altitude(drone,20)
+    await drone.action.goto_location(home_lat,home_long,target_alt,90)
+    await wait_for_altitude(drone,target_alt)
     counter = 1
     second_counter = 0
     
