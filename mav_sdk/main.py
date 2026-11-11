@@ -149,7 +149,16 @@ async def run():
         if health.is_global_position_ok and health.is_armable:
             print("Ready to arm")
             break
-   
+  
+
+
+    async for position in drone.telemetry.position():
+        
+        home_lat = position.latitude_deg
+        home_long = position.longitude_deg
+        home_alt = position.absolute_altitude_m
+        break
+    print("here")
     await drone.action.arm()
     await drone.action.takeoff()
     await asyncio.sleep(5.0)
@@ -173,13 +182,6 @@ async def run():
         ans = process_detection(latest)
         vx, vy, vz, yawspeed, aligned = tracker.compute_control(ans)
         if ans is not None:
-            # if contact:
-            #     print("[SUCCESS] Reached target! Despawning/holding.")
-            #     await drone.offboard.set_velocity_body(
-            #         VelocityBodyYawspeed(0.0, 0.0, 0.0, 0.0)
-            #     )
-            #     break
-
             if not aligned:
                 print(f"[CENTERING] err_x={ans.get('error_x', 0):.1f}, yaw={yawspeed:.1f}")
             else:
