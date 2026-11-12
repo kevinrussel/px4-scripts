@@ -31,7 +31,7 @@ class VisualTracker:
         self.tol_y = 0.08
 
         self.lock_enter_tol = 0.08
-        self.lock_exit_tol = 0.15
+        self.lock_exit_tol = 0.10
         self.is_locked = False
 
         self.filtered_err_x = 0.0
