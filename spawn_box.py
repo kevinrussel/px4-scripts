@@ -27,7 +27,7 @@ class box:
         req.type = 2
 
         response = node.request(
-            "/world/baylands/remove",
+            "/world/aruco/remove",
             req,
             Entity,
             Boolean,
@@ -78,7 +78,7 @@ class box:
         self.y = config_file["y_position"] 
         self.z = config_file["z_position"] 
         self.w = config_file["w_position"] 
-        self.create_service = "/world/baylands/create"
+        self.create_service = "/world/aruco/create"
         self.sdf_filename = config_file["sdf_filename"]
         self.sdf_filename = config_file["sdf_filename"]
         self.entity_name = config_file["name"] 
@@ -92,7 +92,7 @@ class box:
         else:
             print("Spawn failed")
 
-        topic_name = "/world/baylands/dynamic_pose/info"
+        topic_name = "/world/aruco/dynamic_pose/info"
 
         self.node.subscribe(Pose_V, topic_name, self.callback_function)
 
